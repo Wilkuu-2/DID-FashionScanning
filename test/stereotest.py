@@ -1,18 +1,30 @@
 #!/bin/env python3
 
 # Change camera indices when on other device 
-cam1Index = 4
-cam2Index = 6
+cam1Index = 0
+cam2Index = 4 
 
 import os , subprocess ,sys, time
 import cv2 as cv
 #import numpy as np 
 from matplotlib import pyplot as plt 
 
-cam1 = cv.VideoCapture(cam1Index)
-cam2 = cv.VideoCapture(cam2Index)
+if sys.platform.startswith('windows'):
+    cam1 = cv.VideoCapture(cam1Index)
+    cam2 = cv.VideoCapture(cam2Index)
+elif sys.platform.startswith('linux'):
+    cam1 = cv.VideoCapture(f"/dev/video{cam1Index}")
+    cam2 = cv.VideoCapture(f"/dev/video{cam2Index}")
+else:
+    raise OSError("OS not supported")
 
-time.sleep(2)
+for cam in [cam1,cam2]:
+    cam.set(cv.CAP_PROP_FOURCC,cv.VideoWriter.fourcc('M','J','P','G'))
+    cam.set(cv.CAP_PROP_FPS, 25)
+    cam.set(cv.CAP_PROP_FRAME_WIDTH,1280)
+    cam.set(cv.CAP_PROP_FRAME_HEIGHT,720)
+
+time.sleep(1)
 
 rv1 ,ImL = cam1.read()
 rv2 ,ImR = cam2.read()
@@ -28,14 +40,14 @@ ImR = cv.cvtColor(ImR, cv.COLOR_RGB2GRAY)
 #    raise ValueError("Camera measurements return non-zero return value")
 
 # Variables for the stereo algorithm
-minDisparity = 0
-numDisparities = 16
-blockSize = 12
-P1 = 100
-P2 = 1000
-disp12MaxDiff = 1
-preFilterCap = 1
-uniquenessRatio = 3
+minDisparity = 1
+numDisparities = 45
+blockSize = 13
+P1 = 200
+P2 = 4000
+disp12MaxDiff = 15
+preFilterCap = 2
+uniquenessRatio = 1 
 speckleWindowSize = 400
 speckleRange = 200
 
