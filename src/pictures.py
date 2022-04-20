@@ -1,7 +1,6 @@
 
+import exifWrite
 import sys
-sys.path.append("../")
-from src import exifWrite
 import cv2 as cv
 import os
 
