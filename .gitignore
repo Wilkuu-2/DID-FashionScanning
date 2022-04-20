@@ -1,2 +1,7 @@
-test/*.jpg
+*.jpg
+test/picslow
+test/pictures
+__pycache__
+test-data/
+
 
